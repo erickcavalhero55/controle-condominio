@@ -1,16 +1,16 @@
-import MySQLdb
+import pymysql
 
 
 def conectar():
     try:
-        conn = MySQLdb.connect(
-            db='portaria',
-            host='localhost',
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='172.16.1.3',
             user='root',
-            password='270921'
+            password=''
         )
         return conn
-    except MySQLdb.Error as e:
+    except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
 
 
