@@ -19,6 +19,10 @@
 -- Table structure for table `cadastro`
 --
 
+CREATE DATABASE controle_condominio;
+
+USE controle_condominio;
+
 DROP TABLE IF EXISTS `cadastro`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

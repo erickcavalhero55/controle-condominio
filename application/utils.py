@@ -2,14 +2,12 @@ import MySQLdb
 
 
 def conectar():
-
     try:
         conn = MySQLdb.connect(
             db='portaria',
             host='localhost',
             user='root',
             password='270921'
-
         )
         return conn
     except MySQLdb.Error as e:
@@ -65,7 +63,7 @@ def inserir():
     cpf = int(input('Informe o numero do CPF que sera cadastrado: '))
     tipo_morador = input('Informe o tipo de morador que sera cadastrado: ')
 
-    cursor.execute(f"INSERT INT  cadastro (unidade, nome, sobrenome, nascimento, email, telefone, celular, rg, cpf, tipo_morador) VALUES ({unidade},{nome},{sobrenome},{nascimento},{email},{telefone},{celular},{rg},{cpf},{tipo_morador})")
+    cursor.execute(f"INSERT INTO cadastro (unidade, nome, sobrenome, nascimento, email, telefone, celular, rg, cpf, tipo_morador) VALUES ({unidade},{nome},{sobrenome},{nascimento},{email},{telefone},{celular},{rg},{cpf},{tipo_morador})")
     conn.commit()
 
     if cursor.rowcount == 1:

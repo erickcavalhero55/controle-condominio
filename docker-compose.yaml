@@ -1,0 +1,19 @@
+version: "3"
+services:
+  database:
+    image: mysql
+    container_name: database
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      default:
+        ipv4_address: 172.16.1.3
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.1.0/24
