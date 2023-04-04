@@ -1,18 +1,16 @@
-import MySQLdb
+import pymysql
 
 
 def conectar():
-
     try:
-        conn = MySQLdb.connect(
-            db='portaria',
-            host='localhost',
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='172.16.1.3',
             user='root',
-            password='270921'
-
+            password=''
         )
         return conn
-    except MySQLdb.Error as e:
+    except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
 
 
@@ -65,7 +63,7 @@ def inserir():
     cpf = int(input('Informe o numero do CPF que sera cadastrado: '))
     tipo_morador = input('Informe o tipo de morador que sera cadastrado: ')
 
-    cursor.execute(f"INSERT INT  cadastro (unidade, nome, sobrenome, nascimento, email, telefone, celular, rg, cpf, tipo_morador) VALUES ({unidade},{nome},{sobrenome},{nascimento},{email},{telefone},{celular},{rg},{cpf},{tipo_morador})")
+    cursor.execute(f"INSERT INTO cadastro (unidade, nome, sobrenome, nascimento, email, telefone, celular, rg, cpf, tipo_morador) VALUES ({unidade},{nome},{sobrenome},{nascimento},{email},{telefone},{celular},{rg},{cpf},{tipo_morador})")
     conn.commit()
 
     if cursor.rowcount == 1:
