@@ -122,9 +122,9 @@ def menu():
     print('=========Gerenciamento de cadastros==============')
     print('Selecione uma opção: ')
     print('1 - Listar cadastros.')
-    print('2 - Inserir cadastros.')
-    print('3 - Atualizar cadastros.')
-    print('4 - Deletar cadastros.')
+    print('2 - Inserir cadastro.')
+    print('3 - Atualizar cadastro.')
+    print('4 - Deletar cadastro.')
     opcao = int(input())
     if opcao in [1, 2, 3, 4]:
         if opcao == 1:
