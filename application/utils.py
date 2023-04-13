@@ -119,12 +119,12 @@ def menu():
     """
     Função para gerar o menu inicial
     """
-    print('=========Gerenciamento de Produtos==============')
+    print('=========Gerenciamento de cadastros==============')
     print('Selecione uma opção: ')
-    print('1 - Listar produtos.')
-    print('2 - Inserir produtos.')
-    print('3 - Atualizar produto.')
-    print('4 - Deletar produto.')
+    print('1 - Listar cadastros.')
+    print('2 - Inserir cadastro.')
+    print('3 - Atualizar cadastro.')
+    print('4 - Deletar cadastro.')
     opcao = int(input())
     if opcao in [1, 2, 3, 4]:
         if opcao == 1:
