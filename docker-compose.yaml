@@ -2,7 +2,7 @@ version: "3"
 services:
   database:
     image: mysql
-    container_name: database
+    container_name: controle_condominio_databasecontrole_condominio
     volumes:
       - ./database:/docker-entrypoint-initdb.d
       - ./mysql_data:/var/lib/mysql

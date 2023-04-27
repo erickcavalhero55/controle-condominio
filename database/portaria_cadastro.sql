@@ -23,21 +23,21 @@ CREATE DATABASE controle_condominio;
 
 USE controle_condominio;
 
-DROP TABLE IF EXISTS `cadastro`;
+DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cadastro` (
+CREATE TABLE `person` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `unidade` int DEFAULT NULL,
-  `nome` varchar(100) NOT NULL,
-  `sobrenome` varchar(100) NOT NULL,
-  `nascimento` date DEFAULT NULL,
+#   `unidade` int DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+#   `sobrenome` varchar(100) NOT NULL,
+#   `nascimento` date DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `telefone` varchar(20) DEFAULT NULL,
-  `celular` varchar(20) DEFAULT NULL,
-  `rg` varchar(20) DEFAULT NULL,
-  `cpf` varchar(20) DEFAULT NULL,
-  `tipo_morador` varchar(50) DEFAULT NULL,
+#   `telefone` varchar(20) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+#   `rg` varchar(20) DEFAULT NULL,
+#   `cpf` varchar(20) DEFAULT NULL,
+#   `tipo_morador` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -46,10 +46,9 @@ CREATE TABLE `cadastro` (
 -- Dumping data for table `cadastro`
 --
 
-LOCK TABLES `cadastro` WRITE;
-/*!40000 ALTER TABLE `cadastro` DISABLE KEYS */;
-INSERT INTO `cadastro` VALUES (1,1,'joao','silva','2019-05-18','joaosilva@gmail.com','(11)2225-5336','(11) 7544-3234','56.654-567','345.678.234-12','morador');
-/*!40000 ALTER TABLE `cadastro` ENABLE KEYS */;
+LOCK TABLES `person` WRITE;
+/*!40000 ALTER TABLE `person` DISABLE KEYS */;
+/*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
