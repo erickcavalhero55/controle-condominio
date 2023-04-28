@@ -1,7 +1,17 @@
+import os
+from datetime import time
+
+import time
+
 import pymysql
 
 from application.entity.person import PersonEntity
+from application.service.person import get_person_service
 
+person_service = get_person_service()
+
+def clear():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 def conectar():
     try:
@@ -60,6 +70,12 @@ def inserir():
     person.name = input('Informe o nome que sera cadastrado: ')
     person.email = input('Informe o email que sera cadastrado: ')
     person.phone = int(input('Informe o numero de telefone que sera cadastrado: '))
+    try:
+        person_service.create(person)
+        print("Pessoa cadastrada com sucesso")
+    except:
+        print("Falha ao criar pessoa")
+
 
 
 def atualizar():
@@ -129,3 +145,6 @@ def start():
             print('Opção inválida')
     else:
         print('Opção inválida')
+    time.sleep(3)
+    clear()
+    start()

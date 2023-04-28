@@ -1,7 +1,7 @@
 import argparse
 
-import application.ports.cmd.command_line
-import application.ports.api
+import application.ports.cmd.runner
+import application.ports.api.runner
 
 parser=argparse.ArgumentParser()
 
@@ -10,7 +10,6 @@ args=parser.parse_args()
 
 if __name__ == '__main__':
     if args.mode == 'cmd':
-        application.ports.cmd.command_line.start()
+        application.ports.cmd.runner.start()
     else:
-        application.ports.api.api.start()
-
+        application.ports.api.runner.start()

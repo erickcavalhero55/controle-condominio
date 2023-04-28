@@ -1,25 +1,34 @@
 from application.entity.person import PersonEntity
-from application.repository.mysql import conectar
+from application.repository.mysql import ConnectionManager, get_connection_manager
 
-conn = conectar()
 
-def create(person: PersonEntity):
-    cursor = conn.cursor()
-    cursor.execute(
-        f"""
-            INSERT INTO person (
-                id, 
-                name,
-                email, 
-                phone
-            ) 
-            VALUES 
-            (
-                {person.id},
-                {person.name},
-                {person.email},
-                {person.phone}
-            )""")
-    conn.commit()
+class PersonRepository:
+    def __init__(self):
+        self.connection = get_connection_manager().get_connection()
 
-    return cursor.rowcount == 1
+    def create(self, person: PersonEntity):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            f"""
+                INSERT INTO person (
+                    name,
+                    email, 
+                    phone
+                ) 
+                VALUES 
+                (
+                    '{person.name}',
+                    '{person.email}',
+                    '{person.phone}'
+                )""")
+        self.connection.commit()
+
+        #Pega o ID que foi gerado com AUTO_INCREMENT no banco
+        person.id = cursor.lastrowid
+
+        return person
+
+person_repository = PersonRepository()
+
+def get_person_repository():
+    return person_repository
