@@ -1,15 +1,16 @@
-import argparse
+# This is a sample Python script.
 
-import application.ports.cmd.runner
-import application.ports.api.runner
+# Press Shift+F10 to execute it or replace it with your code.
+# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
-parser=argparse.ArgumentParser()
 
-parser.add_argument("--mode", help="api | cmd")
-args=parser.parse_args()
+def print_hi(name):
+    # Use a breakpoint in the code line below to debug your script.
+    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
+
+# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    if args.mode == 'cmd':
-        application.ports.cmd.runner.start()
-    else:
-        application.ports.api.runner.start()
+    print_hi('PyCharm')
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
