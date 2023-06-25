@@ -7,7 +7,7 @@ api = Api(app)
 
 
 api.add_resource(Hoteis, '/hoteis')
-api.add_resource(Hotel, '/hotel/<string:hoteis_id>')
+api.add_resource(Hotel, '/hotel/<string:hotel_id>')
 
 
 if __name__ =='__main__':
