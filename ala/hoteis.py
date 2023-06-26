@@ -42,7 +42,7 @@ class Hotel(Resource):
             if hotel["id_hoteis"] == hoteis_id:
                 return hotel
         return None
-    def get(self, hoteis_id):
+    def get(self, hotel_id):
         hotel = Hotel.find.hotel(hoteis_id)
         if hotel:
             return hotel
