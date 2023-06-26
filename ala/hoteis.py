@@ -3,21 +3,21 @@ from flask_restful import Resource, reqparse
 hoteis = [
     {
 
-        'id_hoteis': 'alfa',
+        'hotel_id': 'alfa',
         'nome': 'erick',
         'cidade': ' sao paulo'
 
     },
     {
 
-        'id_hoteis': 'bravo',
+        'hotel_id': 'bravo',
         'nome': 'renan',
         'cidade': ' rio de janeiro'
 
     },
     {
 
-        'id_hoteis': 'clarlie',
+        'hotel_id': 'clarlie',
         'nome': 'enzo',
         'cidade': ' parana'
 
@@ -39,7 +39,7 @@ class Hotel(Resource):
 
     def find_hotel(hotel_id):
         for hotel in hoteis:
-            if hotel["id_hotel"] == hotel_id:
+            if hotel["hotel_id"] == hotel_id:
                 return hotel
         return None
     def get(self, hotel_id):
@@ -53,7 +53,7 @@ class Hotel(Resource):
         dados = Hotel.argumentos.parse_args()
 
         novo_hotel = {
-            'id_hotel': hotel_id,
+            'hotel_id': hotel_id,
             'nome': dados['nome'],
             'cidade': dados['cidade']
 
@@ -74,6 +74,9 @@ class Hotel(Resource):
         hoteis.append(novo_hotel)
         return novo_hotel, 201
 
-    def delete(self):
-        pass
+    def delete(self, hotel_id):
+        global hoteis
+        hoteis = [hotel for hotel in hoteis if hotel['hotel_id'] != hotel_id]
+        return {'message': 'Hotel deleted.'}
+
 
