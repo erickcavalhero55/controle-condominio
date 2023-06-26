@@ -37,20 +37,20 @@ class Hotel(Resource):
     argumentos.add_argument('nome')
     argumentos.add_argument('cidade')
 
-    def find_hotel(hoteis_id):
+    def find_hotel(hotel_id):
         for hotel in hoteis:
-            if hotel["id_hoteis"] == hoteis_id:
+            if hotel["id_hotel"] == hotel_id:
                 return hotel
         return None
-    def get(self, hoteis_id):
-        hotel = Hotel.find.hotel(hoteis_id)
+    def get(self, hotel_id):
+        hotel = Hotel.find_hotel(hotel_id)
         if hotel:
             return hotel
         return {'message': 'Hotel not found:'}, 404
 
     def post(self, hotel_id):
 
-
+        dados = Hotel.argumentos.parse_args()
 
         novo_hotel = {
             'id_hotel': hotel_id,
@@ -60,18 +60,17 @@ class Hotel(Resource):
         }
 
         hoteis.append(novo_hotel)
-        return novo_hotel
+        return novo_hotel, 200
 
     def put(self, hotel_id):
 
-        dados  = Hotel.argumentos.parse_args()
+        dados = Hotel.argumentos.parse_args()
         novo_hotel = {'hotel_id': hotel_id, **dados}
 
-        hoteis= Hotel.argumentos.parse_args()
-        if hoteis:
-            hoteis.update(novo_hotel)
+        hotel = Hotel.find_hotel(hotel_id)
+        if hotel:
+            hotel.update(novo_hotel)
             return novo_hotel, 200
-
         hoteis.append(novo_hotel)
         return novo_hotel, 201
 
