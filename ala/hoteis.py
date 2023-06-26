@@ -43,7 +43,7 @@ class Hotel(Resource):
                 return hotel
         return None
     def get(self, hotel_id):
-        hotel = Hotel.find.hotel(hoteis_id)
+        hotel = Hotel.find.hotel(hotel_id)
         if hotel:
             return hotel
         return {'message': 'Hotel not found:'}, 404
