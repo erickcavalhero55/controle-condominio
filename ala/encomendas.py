@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 
 encomendas = [
     {
-        'id': 1,
+        'encomenda_id': 'a',
         'titulo': 'Mercado livre',
         'tipo': 'caixa',
         'codigo': 123245658
@@ -10,7 +10,7 @@ encomendas = [
 
     },
     {
-        'id': 2,
+        'encomenda_id': 'b',
         'titulo': 'Amazon',
         'tipo': 'envelope',
         'codigo': 556589546
@@ -18,13 +18,13 @@ encomendas = [
 
     },
     {
-        'id': 3,
+        'encomenda_id': 'c',
         'titulo': 'Casas Bahia',
         'tipo': 'carta',
         'codigo': 4578954645658111
 
 
-    },
+    }
 ]
 class Encomendas(Resource):
     def get(self):
@@ -38,23 +38,23 @@ class Encomenda(Resource):
     argumentos.add_argument('codigo')
 
 
-    def find_emcomenda(id):
+    def find_encomenda(encomenda_id):
         for encomenda in encomendas:
-            if encomenda["id"] == id:
+            if encomenda["encomenda_id"] == encomenda_id:
                 return encomenda
         return None
-    def get(self, id):
-        encomenda = Encomenda.find_emcomenda(id)
+    def get(self, encomenda_id):
+        encomenda = Encomenda.find_encomenda(encomenda_id)
         if encomenda:
             return encomenda
         return {'message': 'Encomenda not found:'}, 404
 
-    def post(self, id):
+    def post(self, encomenda_id):
 
         dados = Encomenda.argumentos.parse_args()
 
         nova_encomenda = {
-            'id': id,
+            'encomenda_id': encomenda_id,
             'titulo': dados['titulo'],
             'tipo': dados['tipo'],
             'codigo': dados['codigo']
@@ -65,20 +65,20 @@ class Encomenda(Resource):
         encomendas.append(nova_encomenda)
         return nova_encomenda, 200
 
-    def put(self, id):
+    def put(self, encomenda_id):
 
         dados = Encomenda.argumentos.parse_args()
-        nova_encomenda = {'id': id, **dados}
+        nova_encomenda = {'encomenda_id': encomenda_id, **dados}
 
-        encomenda = Encomenda.find_emcomenda(id)
+        encomenda = Encomenda.find_encomenda(encomenda_id)
         if encomenda:
             encomenda.update(nova_encomenda)
             return nova_encomenda, 200
         encomendas.append(nova_encomenda)
         return nova_encomenda, 201
 
-    def delete(self, pessoa_id):
+    def delete(self, encomenda_id):
         global encomendas
-        encomendas = [encomenda for encomenda in encomendas if encomenda['id'] != id]
+        encomendas = [encomenda for encomenda in encomendas if encomenda['encomenda_id'] != encomenda_id]
         return {'message': 'Encomenda deleted.'}
 
