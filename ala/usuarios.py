@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 pessoas = [
@@ -36,12 +37,31 @@ pessoas = [
     },
 ]
 
-class Pessoas(Resource):
+
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
+
+class Usuarios(Resource):
     def get(self):
         return {'pessoas': pessoas}
 
-class Pessoa(Resource):
 
+class Usuario(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('nome')
     argumentos.add_argument('sobrenome')
@@ -50,50 +70,51 @@ class Pessoa(Resource):
     argumentos.add_argument('telefone')
     argumentos.add_argument('celular')
     argumentos.add_argument('email')
+    argumentos.add_argument('genero')
 
-    def find_pessoa(pessoa_id):
+    def find_pessoa(usuario_id):
         for pessoa in pessoas:
-            if pessoa["pessoa_id"] == pessoa_id:
+            if pessoa["pessoa_id"] == usuario_id:
                 return pessoa
         return None
-    def get(self, pessoa_id):
-        pessoa = Pessoa.find_pessoa(pessoa_id)
+
+    def get(self, usuario_id):
+        pessoa = Usuario.find_pessoa(usuario_id)
         if pessoa:
             return pessoa
         return {'message': 'Cadatro not found:'}, 404
 
-    def post(self, pessoa_id):
+    def post(self, usuario_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
-        dados = Pessoa.argumentos.parse_args()
+        dados = Usuario.argumentos.parse_args()
 
-        novo_cadastro = {
-            'pessoa_id': pessoa_id,
-            'nome': dados['nome'],
-            'sobrenome': dados['sobrenome'],
-            'rg': dados['rg'],
-            'cpf': dados['cpf'],
-            'telefone': dados['telefone'],
-            'celular': dados['celular'],
-            'email': dados['email']
+        cursor.execute(
+            f"INSERT INTO usuarios (nome, sobrenome, rg, cpf, telefone, celular, email, genero) VALUES ('{dados['nome']}','{dados['sobrenome']}','{dados['rg']}','{dados['cpf']}','{dados['telefone']}','{dados['celular']}','{dados['email']}','{dados['genero']}')")
+        conn.commit()
 
-        }
+        if cursor.rowcount == 1:
+            print(f"O Usuario {dados['nome']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
-        pessoas.append(novo_cadastro)
-        return novo_cadastro, 200
+        return dados, 200
 
-    def put(self, pessoa_id):
+    def put(self, usuario_id):
 
-        dados = Pessoa.argumentos.parse_args()
-        novo_cadastro = {'pessoa_id': pessoa_id, **dados}
+        dados = Usuario.argumentos.parse_args()
+        novo_cadastro = {'pessoa_id': usuario_id, **dados}
 
-        pessoa = Pessoa.find_pessoa(pessoa_id)
+        pessoa = Usuario.find_pessoa(usuario_id)
         if pessoa:
             pessoa.update(novo_cadastro)
             return novo_cadastro, 200
         pessoas.append(novo_cadastro)
         return novo_cadastro, 201
 
-    def delete(self, pessoa_id):
+    def delete(self, usuario_id):
         global pessoas
-        pessoas = [pessoa for pessoa in pessoas if pessoa['pessoa_id'] != pessoa_id]
+        pessoas = [pessoa for pessoa in pessoas if pessoa['pessoa_id'] != usuario_id]
         return {'message': 'Cadastro deleted.'}

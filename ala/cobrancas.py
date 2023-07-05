@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 cobrancas = [
@@ -23,6 +24,23 @@ cobrancas = [
         'gas': 90
     }
 ]
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
 
 class Cobrancas(Resource):
     def get(self):
@@ -31,10 +49,17 @@ class Cobrancas(Resource):
 class Cobranca(Resource):
 
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('condominio')
-    argumentos.add_argument('agua')
-    argumentos.add_argument('luz')
-    argumentos.add_argument('gas')
+    argumentos.add_argument('cod_barras')
+    argumentos.add_argument('data_vencimento')
+    argumentos.add_argument('data_pagamento')
+    argumentos.add_argument('valor')
+    argumentos.add_argument('titulo')
+    argumentos.add_argument('observacao')
+    argumentos.add_argument('juros')
+    argumentos.add_argument('multa')
+    argumentos.add_argument('desconto')
+    argumentos.add_argument('total')
+    argumentos.add_argument('id_usuarios')
 
     def find_cobranca(cobranca_id):
         for cobranca in cobrancas:
@@ -48,21 +73,22 @@ class Cobranca(Resource):
         return {'message': 'Cobrancas not found:'}, 404
 
     def post(self, cobranca_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Cobranca.argumentos.parse_args()
 
-        novo_cobranca = {
-            'cobranca_id': cobranca_id,
-            'condominio': dados['condominio'],
-            'agua': dados['agua'],
-            'luz': dados['luz'],
-            'gas': dados['gas'],
+        cursor.execute(
+            f"INSERT INTO cobrancas (cod_barras, data_vencimento, data_pagamento, valor, titulo, observacao, juros, multa, desconto, total, id_usuarios) VALUES ('{dados['cod_barras']}','{dados['data_vencimento']}','{dados['data_pagamento']}','{dados['valor']}','{dados['titulo']}','{dados['observacao']}','{dados['juros']}','{dados['multa']}','{dados['desconto']}','{dados['total']}','{dados['id_usuarios']}')")
+        conn.commit()
 
+        if cursor.rowcount == 1:
+            print(f"A Cobranca {dados['cod_barras']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
-        }
-
-        cobrancas.append(novo_cobranca)
-        return novo_cobranca, 200
+        return dados, 200
 
     def put(self, cobranca_id):
 

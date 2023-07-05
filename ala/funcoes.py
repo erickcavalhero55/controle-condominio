@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 funcoes = [
@@ -20,6 +21,24 @@ funcoes = [
 
     }
 ]
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
+
 class Funcoes(Resource):
     def get(self):
         return {'funcoes': funcoes}
@@ -27,7 +46,7 @@ class Funcoes(Resource):
 class Funcoe(Resource):
 
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('nome')
+    argumentos.add_argument('funcao')
 
 
 
@@ -44,18 +63,22 @@ class Funcoe(Resource):
         return {'message': 'Funcoe not found:'}, 404
 
     def post(self, funcoes_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Funcoe.argumentos.parse_args()
 
-        nova_funcoe = {
-            'funcoes_id': funcoes_id,
-            'nome': dados['nome'],
+        cursor.execute(
+            f"INSERT INTO funcoes (funcao) VALUES ('{dados['funcao']}')")
+        conn.commit()
 
+        if cursor.rowcount == 1:
+            print(f"A Funcoes {dados['funcao']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
-        }
-
-        funcoes.append(nova_funcoe)
-        return nova_funcoe, 200
+        return dados, 200
 
     def put(self, funcoes_id):
 

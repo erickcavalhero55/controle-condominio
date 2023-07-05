@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 unidades = [
@@ -20,6 +21,24 @@ unidades = [
         'andar': 3
     }
 ]
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
+
 
 class Unidades(Resource):
     def get(self):
@@ -31,6 +50,7 @@ class Unidade(Resource):
     argumentos.add_argument('numero')
     argumentos.add_argument('bloco')
     argumentos.add_argument('andar')
+    argumentos.add_argument('id_usuarios')
 
     def find_unidade(unidade_id):
         for unidade in unidades:
@@ -45,20 +65,23 @@ class Unidade(Resource):
         return {'message': 'Unidade not found:'}, 404
 
     def post(self, unidade_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Unidade.argumentos.parse_args()
 
-        nova_unidade = {
-            'unidade_id': unidade_id,
-            'numero': dados['numero'],
-            'bloco': dados['bloco'],
-            'andar': dados['andar']
+        cursor.execute(
+            f"INSERT INTO unidades  (numero, bloco, andar, id_usuarios) VALUES ('{dados['numero']}','{dados['bloco']}','{dados['andar']}','{dados['id_usuarios']}')")
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print(f"A Unidade {dados['numero']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
 
-        }
-
-        unidades.append(nova_unidade)
-        return nova_unidade, 200
+        return dados, 200
 
     def put(self, unidade_id):
 

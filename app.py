@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from ala.hoteis import Hoteis, Hotel
-from ala.pessoas import Pessoas, Pessoa
+from ala.usuarios import Usuarios, Usuario
 from ala.unidades import Unidades, Unidade
 from ala.encomendas import Encomendas, Encomenda
 from ala.funcoes import Funcoes, Funcoe
@@ -14,8 +14,8 @@ api = Api(app)
 
 api.add_resource(Hoteis, '/hoteis')
 api.add_resource(Hotel, '/hotel/<hotel_id>')
-api.add_resource(Pessoas, '/pessoas')
-api.add_resource(Pessoa, '/pessoa/<pessoa_id>')
+api.add_resource(Usuarios, '/usuarios')
+api.add_resource(Usuario, '/usuario/<usuario_id>')
 api.add_resource(Unidades, '/unidades')
 api.add_resource(Unidade, '/unidade/<unidade_id>')
 api.add_resource(Encomendas, '/encomendas')

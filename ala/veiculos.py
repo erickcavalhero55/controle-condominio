@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 veiculos = [
@@ -26,6 +27,24 @@ veiculos = [
 
     }
 ]
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
+
 class Veiculos(Resource):
     def get(self):
         return {'veiculos': veiculos}
@@ -35,8 +54,10 @@ class Veiculo(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('placa')
     argumentos.add_argument('marca')
-    argumentos.add_argument('nome')
+    argumentos.add_argument('nome_veiculo')
     argumentos.add_argument('cor')
+    argumentos.add_argument('id_usuarios')
+
 
     def find_veiculo(veiculo_id):
         for veiculo in veiculos:
@@ -50,21 +71,22 @@ class Veiculo(Resource):
         return {'message': 'Veiculo not found:'}, 404
 
     def post(self, veiculo_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Veiculo.argumentos.parse_args()
 
-        novo_veiculo = {
-            'veiculo_id': veiculo_id,
-            'placa': dados['placa'],
-            'marca': dados['marca'],
-            'nome': dados['nome'],
-            'cor': dados['cor'],
+        cursor.execute(
+            f"INSERT INTO veiculos (placa, marca, nome_veiculo, cor, id_usuarios) VALUES ('{dados['placa']}','{dados['marca']}','{dados['nome_veiculo']}','{dados['cor']}','{dados['id_usuarios']}')")
+        conn.commit()
 
+        if cursor.rowcount == 1:
+            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
-        }
-
-        veiculos.append(novo_veiculo)
-        return novo_veiculo, 200
+        return dados, 200
 
     def put(self, veiculo_id):
 

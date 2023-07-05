@@ -1,3 +1,4 @@
+import pymysql
 from flask_restful import Resource, reqparse
 
 encomendas = [
@@ -26,6 +27,24 @@ encomendas = [
 
     }
 ]
+def conectar():
+    try:
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='root',
+            password='270921EN@'
+        )
+        return conn
+    except pymysql.Error as e:
+        print(f'Erro ao conectar ao Mysql {e}')
+
+
+def desconectar(conn):
+    if conn:
+        conn.close()
+
+
 class Encomendas(Resource):
     def get(self):
         return {'encomendas': encomendas}
@@ -35,7 +54,8 @@ class Encomenda(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('titulo')
     argumentos.add_argument('tipo')
-    argumentos.add_argument('codigo')
+    argumentos.add_argument('nota_fiscal')
+    argumentos.add_argument('id_usuarios')
 
 
     def find_encomenda(encomenda_id):
@@ -50,20 +70,22 @@ class Encomenda(Resource):
         return {'message': 'Encomenda not found:'}, 404
 
     def post(self, encomenda_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Encomenda.argumentos.parse_args()
 
-        nova_encomenda = {
-            'encomenda_id': encomenda_id,
-            'titulo': dados['titulo'],
-            'tipo': dados['tipo'],
-            'codigo': dados['codigo']
+        cursor.execute(
+            f"INSERT INTO encomendas (titulo, tipo, nota_fiscal, id_usuarios) VALUES ('{dados['titulo']}','{dados['tipo']}','{dados['nota_fiscal']}','{dados['id_usuarios']}')")
+        conn.commit()
 
+        if cursor.rowcount == 1:
+            print(f"A Encomenda {dados['titulo']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
-        }
-
-        encomendas.append(nova_encomenda)
-        return nova_encomenda, 200
+        return dados, 200
 
     def put(self, encomenda_id):
 
