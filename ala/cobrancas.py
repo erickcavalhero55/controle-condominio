@@ -6,7 +6,7 @@ cobrancas = [
         'condominio': 320,
         'agua': 115,
         'luz': 150,
-        'gas': 90
+        'gas': 90   
     },
     {
         'cobranca_id': 'b',
