@@ -1,3 +1,5 @@
+import datetime
+
 import pymysql
 from flask_restful import Resource, reqparse
 
@@ -40,11 +42,27 @@ def conectar():
 def desconectar(conn):
     if conn:
         conn.close()
-
+def converte_cobranca(cobranca_banco):
+    return {
+        "cobranca_id": cobranca_banco[0],
+        "data_vencimento":  cobranca_banco[2].strftime("%Y-%m-%d"),
+        "data_pagamento": cobranca_banco[3].strftime("%Y-%m-%d %H:%M:%S"),
+    }
 
 class Cobrancas(Resource):
+
     def get(self):
-        return {'cobrancas': cobrancas}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM cobrancas')
+        cobrancas = cursor.fetchall()
+
+        cobrancas_convertido = []
+
+        for cobranca in cobrancas:
+           cobrancas_convertido.append(converte_cobranca(cobranca))
+
+        return {'cobrancas': cobrancas_convertido}
 
 class Cobranca(Resource):
 

@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `controle_condominio`.`cobrancas` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cod_barras` VARCHAR(50) NOT NULL,
   `data_vencimento` DATE NOT NULL,
-  `data_pagamento` DATE NOT NULL,
+  `data_pagamento` DATETIME NOT NULL,
   `valor` VARCHAR(50) NOT NULL,
   `titulo` VARCHAR(50) NOT NULL,
   `observacao` VARCHAR(45) NOT NULL,
