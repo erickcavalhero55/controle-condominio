@@ -55,10 +55,32 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+def converte_usuario(usuario_banco):
+    return {
+        "usuario_id":usuario_banco[0],
+        "nome":usuario_banco[1],
+        "sobrenome":usuario_banco[2],
+        "rg":usuario_banco[3],
+        "cpf":usuario_banco[4],
+        "telefone":usuario_banco[5],
+        "celular":usuario_banco[6],
+        "email":usuario_banco[7],
+        "genero":usuario_banco[8]
+    }
 
 class Usuarios(Resource):
     def get(self):
-        return {'pessoas': pessoas}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM usuarios')
+        usuarios = cursor.fetchall()
+
+        usuarios_convertido = []
+
+        for usuario in usuarios:
+            usuarios_convertido.append(converte_usuario(usuario))
+
+        return {'usuarios': usuarios_convertido}
 
 
 class Usuario(Resource):

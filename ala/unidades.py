@@ -38,11 +38,30 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+def converte_unidade(unidade_banco):
+    return {
+        "unidade_id":unidade_banco[0],
+        "numero":unidade_banco[1],
+        "bloco":unidade_banco[2],
+        "andar":unidade_banco[3],
+        "id_usuarios":unidade_banco[4]
+    }
+
 
 
 class Unidades(Resource):
     def get(self):
-        return {'unidades': unidades}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM unidades')
+        unidades = cursor.fetchall()
+
+        unidades_convertido = []
+
+        for unidade in unidades:
+            unidades_convertido.append(converte_unidade(unidade))
+
+        return {'unidade': unidades_convertido}
 
 class Unidade(Resource):
 

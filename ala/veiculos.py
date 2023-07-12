@@ -44,10 +44,29 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+def converte_veiculo(veiculo_banco):
+    return {
+        "veiculo_id":veiculo_banco[0],
+        "placa":veiculo_banco[1],
+        "marca":veiculo_banco[2],
+        "nome_veiculo":veiculo_banco[3],
+        "cor":veiculo_banco[4],
+        "id_usuarios":veiculo_banco[5]
+    }
 
 class Veiculos(Resource):
     def get(self):
-        return {'veiculos': veiculos}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM veiculos')
+        veiculos = cursor.fetchall()
+
+        veiculos_convertido = []
+
+        for veiculo in veiculos:
+            veiculos_convertido.append(converte_veiculo(veiculo))
+
+        return {'veiculos': veiculos_convertido}
 
 class Veiculo(Resource):
 

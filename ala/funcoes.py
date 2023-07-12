@@ -38,10 +38,26 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+def converte_funcoes(funcoes_banco):
+    return {
+        "funcoes_id":funcoes_banco[0],
+        "funcao":funcoes_banco[1]
+    }
+
 
 class Funcoes(Resource):
     def get(self):
-        return {'funcoes': funcoes}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM funcoes')
+        funcoes = cursor.fetchall()
+
+        funcoes_convertido = []
+
+        for funcoe in funcoes:
+            funcoes_convertido.append(converte_funcoes(funcoe))
+
+        return {'funcoes': funcoes_convertido}
 
 class Funcoe(Resource):
 

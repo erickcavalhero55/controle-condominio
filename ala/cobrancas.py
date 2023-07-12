@@ -42,11 +42,21 @@ def conectar():
 def desconectar(conn):
     if conn:
         conn.close()
+
 def converte_cobranca(cobranca_banco):
     return {
         "cobranca_id": cobranca_banco[0],
+        "cod_barras": cobranca_banco[1],
         "data_vencimento":  cobranca_banco[2].strftime("%Y-%m-%d"),
         "data_pagamento": cobranca_banco[3].strftime("%Y-%m-%d %H:%M:%S"),
+        "valor":cobranca_banco[4],
+        "titulo":cobranca_banco[5],
+        "observacao":cobranca_banco[6],
+        "juros":cobranca_banco[7],
+        "multa":cobranca_banco[8],
+        "desconto":cobranca_banco[9],
+        "total":cobranca_banco[10],
+        "id_usuarios":cobranca_banco[11]
     }
 
 class Cobrancas(Resource):

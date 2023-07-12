@@ -44,10 +44,30 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+def converte_encomenda(encomenda_banco):
+    return {
+        "encomenda_id":encomenda_banco[0],
+        "titulo":encomenda_banco[1],
+        "tipo":encomenda_banco[2],
+        "nota_fiscal":encomenda_banco[3],
+        "id_usuarios":encomenda_banco[4]
+    }
+
 
 class Encomendas(Resource):
     def get(self):
-        return {'encomendas': encomendas}
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM encomendas')
+        encomendas = cursor.fetchall()
+
+        encomendas_convertido = []
+
+        for encomenda in encomendas:
+            encomendas_convertido.append(converte_cobranca(encomenda))
+
+        return {'encomendas': encomendas_convertido}
+
 
 class Encomenda(Resource):
 
