@@ -101,10 +101,12 @@ class Usuario(Resource):
         return None
 
     def get(self, usuario_id):
-        pessoa = Usuario.find_pessoa(usuario_id)
-        if pessoa:
-            return pessoa
-        return {'message': 'Cadatro not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from usuarios where id ='{usuario_id}'")
+        usuario= cursor.fetchone()
+
+        return converte_usuario(usuario)
 
     def post(self, usuario_id):
         conn = conectar()

@@ -64,7 +64,7 @@ class Encomendas(Resource):
         encomendas_convertido = []
 
         for encomenda in encomendas:
-            encomendas_convertido.append(converte_cobranca(encomenda))
+            encomendas_convertido.append(converte_encomenda(encomenda))
 
         return {'encomendas': encomendas_convertido}
 
@@ -84,10 +84,14 @@ class Encomenda(Resource):
                 return encomenda
         return None
     def get(self, encomenda_id):
-        encomenda = Encomenda.find_encomenda(encomenda_id)
-        if encomenda:
-            return encomenda
-        return {'message': 'Encomenda not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from encomendas where id ='{encomenda_id}'")
+        encomenda = cursor.fetchone()
+
+        return converte_encomenda(encomenda)
+
+
 
     def post(self, encomenda_id):
         conn = conectar()

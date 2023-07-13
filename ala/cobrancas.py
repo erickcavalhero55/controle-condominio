@@ -47,7 +47,7 @@ def converte_cobranca(cobranca_banco):
     return {
         "cobranca_id": cobranca_banco[0],
         "cod_barras": cobranca_banco[1],
-        "data_vencimento":  cobranca_banco[2].strftime("%Y-%m-%d"),
+         "data_vencimento":  cobranca_banco[2].strftime("%Y-%m-%d"),
         "data_pagamento": cobranca_banco[3].strftime("%Y-%m-%d %H:%M:%S"),
         "valor":cobranca_banco[4],
         "titulo":cobranca_banco[5],
@@ -95,10 +95,13 @@ class Cobranca(Resource):
                 return cobranca
         return None
     def get(self, cobranca_id):
-        cobranca = Cobranca.find_cobranca(cobranca_id)
-        if cobranca:
-            return cobranca
-        return {'message': 'Cobrancas not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from veiculos where id ='{cobranca_id}'")
+        cobrancas = cursor.fetchone()
+
+        return converte_cobranca(cobrancas)
+
 
     def post(self, cobranca_id):
         conn = conectar()

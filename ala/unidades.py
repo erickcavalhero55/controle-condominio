@@ -78,11 +78,12 @@ class Unidade(Resource):
         return None
 
     def get(self, unidade_id):
-        unidade = Unidade.find_unidade(unidade_id)
-        if unidade:
-            return unidade
-        return {'message': 'Unidade not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from unidades where id ='{unidade_id}'")
+        unidade = cursor.fetchone()
 
+        return converte_unidade(unidade)
     def post(self, unidade_id):
         conn = conectar()
         cursor = conn.cursor()
