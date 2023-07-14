@@ -9,7 +9,7 @@ cobrancas = [
         'condominio': 320,
         'agua': 115,
         'luz': 150,
-        'gas': 90   
+        'gas': 90
     },
     {
         'cobranca_id': 'b',
@@ -134,6 +134,15 @@ class Cobranca(Resource):
         return novo_cobranca, 201
 
     def delete(self, cobranca_id):
-        global cobrancas
-        cobrancas = [cobranca for cobranca in cobrancas if cobranca['cobranca_id'] != cobranca_id]
-        return {'message': 'Cobrancas deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(f'DELETE FROM cobrancas WHERE id={cobranca_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Cobrancas excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)
+

@@ -124,7 +124,14 @@ class Encomenda(Resource):
         return nova_encomenda, 201
 
     def delete(self, encomenda_id):
-        global encomendas
-        encomendas = [encomenda for encomenda in encomendas if encomenda['encomenda_id'] != encomenda_id]
-        return {'message': 'Encomenda deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
 
+        cursor.execute(f'DELETE FROM encomendas WHERE id={encomenda_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Encomenda excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)

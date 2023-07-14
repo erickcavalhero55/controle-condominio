@@ -139,6 +139,15 @@ class Usuario(Resource):
         return novo_cadastro, 201
 
     def delete(self, usuario_id):
-        global pessoas
-        pessoas = [pessoa for pessoa in pessoas if pessoa['pessoa_id'] != usuario_id]
-        return {'message': 'Cadastro deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(f'DELETE FROM usuarios WHERE id={usuario_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Usuarios excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)
+

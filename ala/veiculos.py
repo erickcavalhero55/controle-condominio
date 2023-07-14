@@ -122,6 +122,14 @@ class Veiculo(Resource):
         return novo_veiculo, 201
 
     def delete(self, veiculo_id):
-        global veiculos
-        veiculos = [veiculo for veiculo in veiculos if veiculo['veiculo_id'] != veiculo_id]
-        return {'message': 'Veiculo deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(f'DELETE FROM veiculos WHERE id={veiculo_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Veiculos excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)

@@ -116,6 +116,14 @@ class Unidade(Resource):
         return nova_unidade, 201
 
     def delete(self, unidade_id):
-        global unidades
-        unidades = [unidade for unidade in unidades if unidade['unidade_id'] != unidade_id]
-        return {'message': 'Unidade deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(f'DELETE FROM unidades WHERE id={unidade_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Unidades excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)

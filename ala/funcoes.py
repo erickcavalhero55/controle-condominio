@@ -111,6 +111,14 @@ class Funcoe(Resource):
         return nova_funcoe, 201
 
     def delete(self, funcoes_id):
-        global funcoes
-        funcoes = [funcoe for funcoe in funcoes if funcoe['funcoes_id'] != funcoes_id]
-        return {'message': 'Funcoes deleted.'}
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(f'DELETE FROM funcoes WHERE id={funcoes_id}')
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print('Funçoes excluido com sucesso.')
+        else:
+            print('Não foi possivel DELETAR. ')
+        desconectar(conn)
