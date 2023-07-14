@@ -73,10 +73,12 @@ class Funcoe(Resource):
         return None
 
     def get(self, funcoes_id):
-        funcoe = Funcoe.find_funcoe(funcoes_id)
-        if funcoe:
-            return funcoe
-        return {'message': 'Funcoe not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from funcoes where id ='{funcoes_id}'")
+        funcoes = cursor.fetchone()
+
+        return converte_funcoes(funcoes)
 
     def post(self, funcoes_id):
         conn = conectar()

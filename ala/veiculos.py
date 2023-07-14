@@ -84,10 +84,12 @@ class Veiculo(Resource):
                 return veiculo
         return None
     def get(self, veiculo_id):
-        veiculo = Veiculo.find_veiculo(veiculo_id)
-        if veiculo:
-            return veiculo
-        return {'message': 'Veiculo not found:'}, 404
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"select * from veiculos where id ='{veiculo_id}'")
+        veiculos = cursor.fetchone()
+
+        return converte_veiculo(veiculos)
 
     def post(self, veiculo_id):
         conn = conectar()
