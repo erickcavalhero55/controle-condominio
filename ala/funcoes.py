@@ -89,14 +89,12 @@ class Funcoe(Resource):
         cursor.execute(
             f"INSERT INTO funcoes (funcao) VALUES ('{dados['funcao']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"A Funcoes {dados['funcao']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
 
-        return dados, 200
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
 
     def put(self, funcoes_id):
 

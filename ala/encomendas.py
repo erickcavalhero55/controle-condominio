@@ -102,14 +102,13 @@ class Encomenda(Resource):
         cursor.execute(
             f"INSERT INTO encomendas (titulo, tipo, nota_fiscal, id_usuarios) VALUES ('{dados['titulo']}','{dados['tipo']}','{dados['nota_fiscal']}','{dados['id_usuarios']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"A Encomenda {dados['titulo']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
 
-        return dados, 200
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
+
 
     def put(self, encomenda_id):
 

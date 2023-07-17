@@ -126,7 +126,7 @@ class Usuario(Resource):
 
         return dados, 200
 
-    def put(self, usuario_id):
+    def put(self,usuario_id):
 
 
         conn = conectar()
@@ -147,6 +147,12 @@ class Usuario(Resource):
     def delete(self, usuario_id):
         conn = conectar()
         cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM usuarios')
+        usuarios = cursor.fetchall()
+
+        if usuarios is None:
+            return 400
 
         cursor.execute(f'DELETE FROM usuarios WHERE id={usuario_id}')
         conn.commit()

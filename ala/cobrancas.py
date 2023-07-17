@@ -112,14 +112,13 @@ class Cobranca(Resource):
         cursor.execute(
             f"INSERT INTO cobrancas (cod_barras, data_vencimento, data_pagamento, valor, titulo, observacao, juros, multa, desconto, total, id_usuarios) VALUES ('{dados['cod_barras']}','{dados['data_vencimento']}','{dados['data_pagamento']}','{dados['valor']}','{dados['titulo']}','{dados['observacao']}','{dados['juros']}','{dados['multa']}','{dados['desconto']}','{dados['total']}','{dados['id_usuarios']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"A Cobranca {dados['cod_barras']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
 
-        return dados, 200
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+           return dados, 400
+
 
     def put(self, cobranca_id):
 
@@ -132,6 +131,7 @@ class Cobranca(Resource):
             f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',data_pagamento='{dados['data_pagamento']}',valor='{dados['valor']}',titulo='{dados['titulo']}',observacao='{dados['observacao']}',juros='{dados['juros']}',multa='{dados['multa']}',desconto='{dados['desconto']}',total='{dados['total']}',id_usuarios='{dados['id_usuarios']}'WHERE id = '{cobranca_id}'")
         conn.commit()
         desconectar(conn)
+
         if cursor.rowcount == 1:
             return dados, 200
         else:
@@ -140,6 +140,12 @@ class Cobranca(Resource):
     def delete(self, cobranca_id):
         conn = conectar()
         cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM usuarios')
+        usuarios = cursor.fetchall()
+
+        if usuarios is None:
+            return 400
 
         cursor.execute(f'DELETE FROM cobrancas WHERE id={cobranca_id}')
         conn.commit()

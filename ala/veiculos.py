@@ -101,14 +101,11 @@ class Veiculo(Resource):
         cursor.execute(
             f"INSERT INTO veiculos (placa, marca, nome_veiculo, cor, id_usuarios) VALUES ('{dados['placa']}','{dados['marca']}','{dados['nome_veiculo']}','{dados['cor']}','{dados['id_usuarios']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
-
-        return dados, 200
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
 
     def put(self, veiculo_id):
 
