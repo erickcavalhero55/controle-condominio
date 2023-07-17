@@ -82,6 +82,7 @@ class Unidade(Resource):
         cursor = conn.cursor()
         cursor.execute(f"select * from unidades where id ='{unidade_id}'")
         unidade = cursor.fetchone()
+        desconectar(conn)
 
         return converte_unidade(unidade)
     def post(self, unidade_id):
@@ -91,29 +92,36 @@ class Unidade(Resource):
         dados = Unidade.argumentos.parse_args()
 
         cursor.execute(
-            f"INSERT INTO unidades  (numero, bloco, andar, id_usuarios) VALUES ('{dados['numero']}','{dados['bloco']}','{dados['andar']}','{dados['id_usuarios']}')")
+            f"INSERT INTO unidades (numero, bloco, andar, id_usuarios) VALUES ('{dados['numero']}','{dados['bloco']}','{dados['andar']}','{dados['id_usuarios']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"A Unidade {dados['numero']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
 
+        dados["unidade_id"] = cursor.lastrowid
 
-        return dados, 200
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
+
+
+
 
     def put(self, unidade_id):
+        conn = conectar()
+        cursor = conn.cursor()
 
         dados = Unidade.argumentos.parse_args()
-        nova_unidade = {'unidade_id': unidade_id, **dados}
 
-        unidade = Unidade.find_unidade(unidade_id)
-        if unidade:
-            unidade.update(nova_unidade)
-            return nova_unidade, 200
-        unidades.append(nova_unidade)
-        return nova_unidade, 201
+        cursor.execute(
+            f"UPDATE unidades SET numero='{dados['numero']}',bloco='{dados['bloco']}', andar='{dados['andar']}',id_usuarios='{dados['id_usuarios']}' WHERE id = {unidade_id}")
+        conn.commit()
+        desconectar(conn)
+
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
+
 
     def delete(self, unidade_id):
         conn = conectar()
@@ -121,9 +129,10 @@ class Unidade(Resource):
 
         cursor.execute(f'DELETE FROM unidades WHERE id={unidade_id}')
         conn.commit()
+        desconectar(conn)
 
         if cursor.rowcount == 1:
-            print('Unidades excluido com sucesso.')
+            return dados, 200
         else:
             print('Não foi possivel DELETAR. ')
-        desconectar(conn)
+

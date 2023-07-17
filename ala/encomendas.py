@@ -113,15 +113,21 @@ class Encomenda(Resource):
 
     def put(self, encomenda_id):
 
-        dados = Encomenda.argumentos.parse_args()
-        nova_encomenda = {'encomenda_id': encomenda_id, **dados}
+        conn = conectar()
+        cursor = conn.cursor()
 
-        encomenda = Encomenda.find_encomenda(encomenda_id)
-        if encomenda:
-            encomenda.update(nova_encomenda)
-            return nova_encomenda, 200
-        encomendas.append(nova_encomenda)
-        return nova_encomenda, 201
+        dados = Encomenda.argumentos.parse_args()
+
+        cursor.execute(
+            f"UPDATE encomendas SET titulo='{dados['titulo']}',tipo='{dados['tipo']}',nota_fiscal='{dados['nota_fiscal']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{encomenda_id}'")
+        conn.commit()
+        desconectar(conn)
+
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
+
 
     def delete(self, encomenda_id):
         conn = conectar()

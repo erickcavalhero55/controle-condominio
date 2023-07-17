@@ -120,12 +120,12 @@ class Veiculo(Resource):
         cursor.execute(
             f"UPDATE veiculos  SET placa='{dados['placa']}',marca='{dados['marca']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{veiculo_id}'")
         conn.commit()
+        desconectar(conn)
 
         if cursor.rowcount == 1:
-            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
+           return dados, 200
         else:
-            print('Não foi possivel cadastrar ')
-        desconectar(conn)
+           return dados, 400
 
     def delete(self, veiculo_id):
         conn = conectar()

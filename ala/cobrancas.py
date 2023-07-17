@@ -126,17 +126,16 @@ class Cobranca(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
-        dados = cobranca.argumentos.parse_args()
+        dados = Cobranca.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{veiculo_id}'")
+            f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',data_pagamento='{dados['data_pagamento']}',valor='{dados['valor']}',titulo='{dados['titulo']}',observacao='{dados['observacao']}',juros='{dados['juros']}',multa='{dados['multa']}',desconto='{dados['desconto']}',total='{dados['total']}',id_usuarios='{dados['id_usuarios']}'WHERE id = '{cobranca_id}'")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
 
     def delete(self, cobranca_id):
         conn = conectar()

@@ -103,17 +103,17 @@ class Funcoe(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
-        dados = funcoes.argumentos.parse_args()
+        dados =Funcoe.argumentos.parse_args()
 
         cursor.execute(
             f"UPDATE funcoes  SET funcao='{dados['funcao']}' WHERE id = '{funcoes_id}'")
         conn.commit()
+        desconectar(conn)
 
         if cursor.rowcount == 1:
-            print(f"O Funçôes {dados['funcao']} foi inserido com sucesso. ")
+            return dados, 200
         else:
-            print('Não foi possivel cadastrar ')
-        desconectar(conn)
+            return dados, 400
 
     def delete(self, funcoes_id):
         conn = conectar()

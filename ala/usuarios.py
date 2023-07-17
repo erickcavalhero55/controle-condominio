@@ -128,15 +128,21 @@ class Usuario(Resource):
 
     def put(self, usuario_id):
 
-        dados = Usuario.argumentos.parse_args()
-        novo_cadastro = {'pessoa_id': usuario_id, **dados}
 
-        pessoa = Usuario.find_pessoa(usuario_id)
-        if pessoa:
-            pessoa.update(novo_cadastro)
-            return novo_cadastro, 200
-        pessoas.append(novo_cadastro)
-        return novo_cadastro, 201
+        conn = conectar()
+        cursor = conn.cursor()
+
+        dados = Usuario.argumentos.parse_args()
+
+        cursor.execute(
+            f"UPDATE usuarios SET nome='{dados['nome']}',sobrenome='{dados['sobrenome']}',rg='{dados['rg']}',cpf='{dados['cpf']}',telefone='{dados['telefone']}',celular='{dados['celular']}',email='{dados['email']}',genero='{dados['genero']} '")
+        conn.commit()
+        desconectar(conn)
+
+        if cursor.rowcount == 1:
+            return dados, 200
+        else:
+            return dados, 400
 
     def delete(self, usuario_id):
         conn = conectar()
