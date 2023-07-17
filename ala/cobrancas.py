@@ -123,15 +123,20 @@ class Cobranca(Resource):
 
     def put(self, cobranca_id):
 
-        dados = Cobranca.argumentos.parse_args()
-        novo_cobranca = {'cobranca_id': cobranca_id, **dados}
+        conn = conectar()
+        cursor = conn.cursor()
 
-        cobranca = Cobranca.find_cobranca(cobranca_id)
-        if cobranca:
-            cobranca.update(novo_cobranca)
-            return novo_cobranca, 200
-        cobrancas.append(novo_cobranca)
-        return novo_cobranca, 201
+        dados = cobranca.argumentos.parse_args()
+
+        cursor.execute(
+            f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{veiculo_id}'")
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
     def delete(self, cobranca_id):
         conn = conectar()

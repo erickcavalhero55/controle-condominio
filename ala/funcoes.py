@@ -100,15 +100,20 @@ class Funcoe(Resource):
 
     def put(self, funcoes_id):
 
-        dados = Funcoe.argumentos.parse_args()
-        nova_funcoe = {'funcoes_id': funcoes_id, **dados}
+        conn = conectar()
+        cursor = conn.cursor()
 
-        funcoe = Funcoe.find_funcoe(funcoes_id)
-        if funcoe:
-            funcoe.update(nova_funcoe)
-            return nova_funcoe, 200
-        funcoes.append(nova_funcoe)
-        return nova_funcoe, 201
+        dados = funcoes.argumentos.parse_args()
+
+        cursor.execute(
+            f"UPDATE funcoes  SET funcao='{dados['funcao']}' WHERE id = '{funcoes_id}'")
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print(f"O Funçôes {dados['funcao']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
     def delete(self, funcoes_id):
         conn = conectar()

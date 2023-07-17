@@ -1,4 +1,5 @@
 import pymysql
+
 from flask_restful import Resource, reqparse
 
 veiculos = [
@@ -111,15 +112,20 @@ class Veiculo(Resource):
 
     def put(self, veiculo_id):
 
-        dados = Veiculo.argumentos.parse_args()
-        novo_veiculo = {'veiculo_id': veiculo_id, **dados}
+        conn = conectar()
+        cursor = conn.cursor()
 
-        veiculo = Veiculo.find_veiculo(veiculo_id)
-        if veiculo:
-            veiculo.update(novo_veiculo)
-            return novo_veiculo, 200
-        veiculos.append(novo_veiculo)
-        return novo_veiculo, 201
+        dados = Veiculo.argumentos.parse_args()
+
+        cursor.execute(
+            f"UPDATE veiculos  SET placa='{dados['placa']}',marca='{dados['marca']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{veiculo_id}'")
+        conn.commit()
+
+        if cursor.rowcount == 1:
+            print(f"O Veiculo {dados['placa']} foi inserido com sucesso. ")
+        else:
+            print('Não foi possivel cadastrar ')
+        desconectar(conn)
 
     def delete(self, veiculo_id):
         conn = conectar()
