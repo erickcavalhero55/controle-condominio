@@ -55,18 +55,20 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_usuario(usuario_banco):
     return {
-        "usuario_id":usuario_banco[0],
-        "nome":usuario_banco[1],
-        "sobrenome":usuario_banco[2],
-        "rg":usuario_banco[3],
-        "cpf":usuario_banco[4],
-        "telefone":usuario_banco[5],
-        "celular":usuario_banco[6],
-        "email":usuario_banco[7],
-        "genero":usuario_banco[8]
+        "id": usuario_banco[0],
+        "nome": usuario_banco[1],
+        "sobrenome": usuario_banco[2],
+        "rg": usuario_banco[3],
+        "cpf": usuario_banco[4],
+        "telefone": usuario_banco[5],
+        "celular": usuario_banco[6],
+        "email": usuario_banco[7],
+        "genero": usuario_banco[8]
     }
+
 
 class Usuarios(Resource):
     def get(self):
@@ -94,21 +96,17 @@ class Usuario(Resource):
     argumentos.add_argument('email')
     argumentos.add_argument('genero')
 
-    def find_pessoa(usuario_id):
-        for pessoa in pessoas:
-            if pessoa["pessoa_id"] == usuario_id:
-                return pessoa
-        return None
 
-    def get(self, usuario_id):
+
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from usuarios where id ='{usuario_id}'")
-        usuario= cursor.fetchone()
+        cursor.execute(f"select * from usuarios where id ='{id}'")
+        usuario = cursor.fetchone()
 
         return converte_usuario(usuario)
 
-    def post(self, usuario_id):
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -117,18 +115,16 @@ class Usuario(Resource):
         cursor.execute(
             f"INSERT INTO usuarios (nome, sobrenome, rg, cpf, telefone, celular, email, genero) VALUES ('{dados['nome']}','{dados['sobrenome']}','{dados['rg']}','{dados['cpf']}','{dados['telefone']}','{dados['celular']}','{dados['email']}','{dados['genero']}')")
         conn.commit()
-
-        if cursor.rowcount == 1:
-            print(f"O Usuario {dados['nome']} foi inserido com sucesso. ")
-        else:
-            print('Não foi possivel cadastrar ')
         desconectar(conn)
 
-        return dados, 200
+        dados["id"] = cursor.lastrowid
 
-    def put(self,usuario_id):
+        if cursor.rowcount == 1:
+           return dados, 200
+        else:
+            return dados, 400
 
-
+    def put(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -144,7 +140,7 @@ class Usuario(Resource):
         else:
             return dados, 400
 
-    def delete(self, usuario_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -154,7 +150,7 @@ class Usuario(Resource):
         if usuarios is None:
             return 400
 
-        cursor.execute(f'DELETE FROM usuarios WHERE id={usuario_id}')
+        cursor.execute(f'DELETE FROM usuarios WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:
@@ -162,4 +158,3 @@ class Usuario(Resource):
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)
-

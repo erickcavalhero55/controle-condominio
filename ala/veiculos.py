@@ -28,6 +28,8 @@ veiculos = [
 
     }
 ]
+
+
 def conectar():
     try:
         conn = pymysql.connect(
@@ -45,15 +47,17 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_veiculo(veiculo_banco):
     return {
-        "veiculo_id":veiculo_banco[0],
-        "placa":veiculo_banco[1],
-        "marca":veiculo_banco[2],
-        "nome_veiculo":veiculo_banco[3],
-        "cor":veiculo_banco[4],
-        "id_usuarios":veiculo_banco[5]
+        "id": veiculo_banco[0],
+        "placa": veiculo_banco[1],
+        "marca": veiculo_banco[2],
+        "nome_veiculo": veiculo_banco[3],
+        "cor": veiculo_banco[4],
+        "id_usuarios": veiculo_banco[5]
     }
+
 
 class Veiculos(Resource):
     def get(self):
@@ -69,8 +73,8 @@ class Veiculos(Resource):
 
         return {'veiculos': veiculos_convertido}
 
-class Veiculo(Resource):
 
+class Veiculo(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('placa')
     argumentos.add_argument('marca')
@@ -79,20 +83,17 @@ class Veiculo(Resource):
     argumentos.add_argument('id_usuarios')
 
 
-    def find_veiculo(veiculo_id):
-        for veiculo in veiculos:
-            if veiculo["veiculo_id"] == veiculo_id:
-                return veiculo
-        return None
-    def get(self, veiculo_id):
+
+
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from veiculos where id ='{veiculo_id}'")
+        cursor.execute(f"select * from veiculos where id ='{id}'")
         veiculos = cursor.fetchone()
 
         return converte_veiculo(veiculos)
 
-    def post(self, veiculo_id):
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -102,12 +103,14 @@ class Veiculo(Resource):
             f"INSERT INTO veiculos (placa, marca, nome_veiculo, cor, id_usuarios) VALUES ('{dados['placa']}','{dados['marca']}','{dados['nome_veiculo']}','{dados['cor']}','{dados['id_usuarios']}')")
         conn.commit()
         desconectar(conn)
+
+        dados["id"] = cursor.lastrowid
         if cursor.rowcount == 1:
             return dados, 200
         else:
             return dados, 400
 
-    def put(self, veiculo_id):
+    def put(self, id):
 
         conn = conectar()
         cursor = conn.cursor()
@@ -120,15 +123,15 @@ class Veiculo(Resource):
         desconectar(conn)
 
         if cursor.rowcount == 1:
-           return dados, 200
+            return dados, 200
         else:
-           return dados, 400
+            return dados, 400
 
-    def delete(self, veiculo_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute(f'DELETE FROM veiculos WHERE id={veiculo_id}')
+        cursor.execute(f'DELETE FROM veiculos WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:

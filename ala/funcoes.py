@@ -6,21 +6,20 @@ funcoes = [
         'funcoes_id': 'a',
         'nome': 'jose'
 
-
     },
     {
         'funcoes_id': 'b',
         'nome': 'maria'
-
 
     },
     {
         'funcoes_id': 'c',
         'nome': 'joao'
 
-
     }
 ]
+
+
 def conectar():
     try:
         conn = pymysql.connect(
@@ -38,10 +37,11 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_funcoes(funcoes_banco):
     return {
-        "funcoes_id":funcoes_banco[0],
-        "funcao":funcoes_banco[1]
+        "id": funcoes_banco[0],
+        "funcao": funcoes_banco[1]
     }
 
 
@@ -59,28 +59,21 @@ class Funcoes(Resource):
 
         return {'funcoes': funcoes_convertido}
 
-class Funcoe(Resource):
 
+class Funcoe(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('funcao')
 
 
-
-    def find_funcoe(funcoes_id):
-        for funcoe in funcoes:
-            if funcoe["funcoes_id"] == funcoes_id:
-                return funcoe
-        return None
-
-    def get(self, funcoes_id):
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from funcoes where id ='{funcoes_id}'")
+        cursor.execute(f"select * from funcoes where id ='{id}'")
         funcoes = cursor.fetchone()
 
         return converte_funcoes(funcoes)
 
-    def post(self, funcoes_id):
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -91,20 +84,22 @@ class Funcoe(Resource):
         conn.commit()
         desconectar(conn)
 
+        dados["id"] = cursor.lastrowid
+
         if cursor.rowcount == 1:
             return dados, 200
         else:
             return dados, 400
 
-    def put(self, funcoes_id):
+    def put(self, id):
 
         conn = conectar()
         cursor = conn.cursor()
 
-        dados =Funcoe.argumentos.parse_args()
+        dados = Funcoe.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE funcoes  SET funcao='{dados['funcao']}' WHERE id = '{funcoes_id}'")
+            f"UPDATE funcoes  SET funcao='{dados['funcao']}' WHERE id = '{id}'")
         conn.commit()
         desconectar(conn)
 
@@ -113,11 +108,11 @@ class Funcoe(Resource):
         else:
             return dados, 400
 
-    def delete(self, funcoes_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute(f'DELETE FROM funcoes WHERE id={funcoes_id}')
+        cursor.execute(f'DELETE FROM funcoes WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:

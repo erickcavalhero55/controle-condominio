@@ -21,6 +21,8 @@ unidades = [
         'andar': 3
     }
 ]
+
+
 def conectar():
     try:
         conn = pymysql.connect(
@@ -38,15 +40,15 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_unidade(unidade_banco):
     return {
-        "unidade_id":unidade_banco[0],
-        "numero":unidade_banco[1],
-        "bloco":unidade_banco[2],
-        "andar":unidade_banco[3],
-        "id_usuarios":unidade_banco[4]
+        "id": unidade_banco[0],
+        "numero": unidade_banco[1],
+        "bloco": unidade_banco[2],
+        "andar": unidade_banco[3],
+        "id_usuarios": unidade_banco[4]
     }
-
 
 
 class Unidades(Resource):
@@ -63,29 +65,25 @@ class Unidades(Resource):
 
         return {'unidade': unidades_convertido}
 
-class Unidade(Resource):
 
+class Unidade(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('numero')
     argumentos.add_argument('bloco')
     argumentos.add_argument('andar')
     argumentos.add_argument('id_usuarios')
 
-    def find_unidade(unidade_id):
-        for unidade in unidades:
-            if unidade["unidade_id"] == unidade_id:
-                return unidade
-        return None
 
-    def get(self, unidade_id):
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from unidades where id ='{unidade_id}'")
+        cursor.execute(f"select * from unidades where id ='{id}'")
         unidade = cursor.fetchone()
         desconectar(conn)
 
         return converte_unidade(unidade)
-    def post(self, unidade_id):
+
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -96,24 +94,21 @@ class Unidade(Resource):
         conn.commit()
         desconectar(conn)
 
-        dados["unidade_id"] = cursor.lastrowid
+        dados["id"] = cursor.lastrowid
 
         if cursor.rowcount == 1:
             return dados, 200
         else:
             return dados, 400
 
-
-
-
-    def put(self, unidade_id):
+    def put(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
         dados = Unidade.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE unidades SET numero='{dados['numero']}',bloco='{dados['bloco']}', andar='{dados['andar']}',id_usuarios='{dados['id_usuarios']}' WHERE id = {unidade_id}")
+            f"UPDATE unidades SET numero='{dados['numero']}',bloco='{dados['bloco']}', andar='{dados['andar']}',id_usuarios='{dados['id_usuarios']}' WHERE id = {id}")
         conn.commit()
         desconectar(conn)
 
@@ -122,12 +117,11 @@ class Unidade(Resource):
         else:
             return dados, 400
 
-
-    def delete(self, unidade_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute(f'DELETE FROM unidades WHERE id={unidade_id}')
+        cursor.execute(f'DELETE FROM unidades WHERE id={id}')
         conn.commit()
         desconectar(conn)
 
@@ -135,4 +129,3 @@ class Unidade(Resource):
             return dados, 200
         else:
             print('Não foi possivel DELETAR. ')
-

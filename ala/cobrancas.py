@@ -1,5 +1,3 @@
-import datetime
-
 import pymysql
 from flask_restful import Resource, reqparse
 
@@ -26,6 +24,8 @@ cobrancas = [
         'gas': 90
     }
 ]
+
+
 def conectar():
     try:
         conn = pymysql.connect(
@@ -43,21 +43,23 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_cobranca(cobranca_banco):
     return {
-        "cobranca_id": cobranca_banco[0],
+        "id": cobranca_banco[0],
         "cod_barras": cobranca_banco[1],
-        "data_vencimento":  cobranca_banco[2].strftime("%Y-%m-%d"),
+        "data_vencimento": cobranca_banco[2].strftime("%Y-%m-%d"),
         "data_pagamento": cobranca_banco[3].strftime("%Y-%m-%d %H:%M:%S"),
-        "valor":cobranca_banco[4],
-        "titulo":cobranca_banco[5],
-        "observacao":cobranca_banco[6],
-        "juros":cobranca_banco[7],
-        "multa":cobranca_banco[8],
-        "desconto":cobranca_banco[9],
-        "total":cobranca_banco[10],
-        "id_usuarios":cobranca_banco[11]
+        "valor": cobranca_banco[4],
+        "titulo": cobranca_banco[5],
+        "observacao": cobranca_banco[6],
+        "juros": cobranca_banco[7],
+        "multa": cobranca_banco[8],
+        "desconto": cobranca_banco[9],
+        "total": cobranca_banco[10],
+        "id_usuarios": cobranca_banco[11]
     }
+
 
 class Cobrancas(Resource):
 
@@ -70,12 +72,12 @@ class Cobrancas(Resource):
         cobrancas_convertido = []
 
         for cobranca in cobrancas:
-           cobrancas_convertido.append(converte_cobranca(cobranca))
+            cobrancas_convertido.append(converte_cobranca(cobranca))
 
         return {'cobrancas': cobrancas_convertido}
 
-class Cobranca(Resource):
 
+class Cobranca(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('cod_barras')
     argumentos.add_argument('data_vencimento')
@@ -89,21 +91,16 @@ class Cobranca(Resource):
     argumentos.add_argument('total')
     argumentos.add_argument('id_usuarios')
 
-    def find_cobranca(cobranca_id):
-        for cobranca in cobrancas:
-            if cobranca["cobranca_id"] == cobranca_id:
-                return cobranca
-        return None
-    def get(self, cobranca_id):
+
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from cobrancas where id ='{cobranca_id}'")
+        cursor.execute(f"select * from cobrancas where id ='{id}'")
         cobrancas = cursor.fetchone()
 
         return converte_cobranca(cobrancas)
 
-
-    def post(self, cobranca_id):
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -114,13 +111,14 @@ class Cobranca(Resource):
         conn.commit()
         desconectar(conn)
 
+        dados["id"] = cursor.lastrowid
+
         if cursor.rowcount == 1:
             return dados, 200
         else:
-           return dados, 400
+            return dados, 400
 
-
-    def put(self, cobranca_id):
+    def put(self, id):
 
         conn = conectar()
         cursor = conn.cursor()
@@ -128,7 +126,7 @@ class Cobranca(Resource):
         dados = Cobranca.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',data_pagamento='{dados['data_pagamento']}',valor='{dados['valor']}',titulo='{dados['titulo']}',observacao='{dados['observacao']}',juros='{dados['juros']}',multa='{dados['multa']}',desconto='{dados['desconto']}',total='{dados['total']}',id_usuarios='{dados['id_usuarios']}'WHERE id = '{cobranca_id}'")
+            f"UPDATE cobrancas SET cod_barras='{dados['cod_barras']}',data_vencimento='{dados['data_vencimento']}',data_pagamento='{dados['data_pagamento']}',valor='{dados['valor']}',titulo='{dados['titulo']}',observacao='{dados['observacao']}',juros='{dados['juros']}',multa='{dados['multa']}',desconto='{dados['desconto']}',total='{dados['total']}',id_usuarios='{dados['id_usuarios']}'WHERE id = '{id}'")
         conn.commit()
         desconectar(conn)
 
@@ -137,7 +135,7 @@ class Cobranca(Resource):
         else:
             return dados, 400
 
-    def delete(self, cobranca_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -147,7 +145,7 @@ class Cobranca(Resource):
         if usuarios is None:
             return 400
 
-        cursor.execute(f'DELETE FROM cobrancas WHERE id={cobranca_id}')
+        cursor.execute(f'DELETE FROM cobrancas WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:
@@ -155,4 +153,3 @@ class Cobranca(Resource):
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)
-

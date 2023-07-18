@@ -6,7 +6,7 @@ from ala.unidades import Unidades, Unidade
 from ala.encomendas import Encomendas, Encomenda
 from ala.funcoes import Funcoes, Funcoe
 from ala.veiculos import Veiculos, Veiculo
-from ala.cobrancas import Cobrancas,Cobranca
+from ala.cobrancas import Cobrancas, Cobranca
 
 app = Flask(__name__)
 api = Api(app)

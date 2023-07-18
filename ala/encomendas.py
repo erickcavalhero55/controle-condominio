@@ -1,40 +1,18 @@
 import pymysql
 from flask_restful import Resource, reqparse
 
-encomendas = [
-    {
-        'encomenda_id': 'a',
-        'titulo': 'Mercado livre',
-        'tipo': 'caixa',
-        'codigo': 123245658
+encomendas = [{'encomenda_id': 'a', 'titulo': 'Mercado livre', 'tipo': 'caixa', 'codigo': 123245658
+
+               }, {'encomenda_id': 'b', 'titulo': 'Amazon', 'tipo': 'envelope', 'codigo': 556589546
+
+                   }, {'encomenda_id': 'c', 'titulo': 'Casas Bahia', 'tipo': 'carta', 'codigo': 4578954645658111
+
+                       }]
 
 
-    },
-    {
-        'encomenda_id': 'b',
-        'titulo': 'Amazon',
-        'tipo': 'envelope',
-        'codigo': 556589546
-
-
-    },
-    {
-        'encomenda_id': 'c',
-        'titulo': 'Casas Bahia',
-        'tipo': 'carta',
-        'codigo': 4578954645658111
-
-
-    }
-]
 def conectar():
     try:
-        conn = pymysql.connect(
-            db='controle_condominio',
-            host='localhost',
-            user='root',
-            password='270921EN@'
-        )
+        conn = pymysql.connect(db='controle_condominio', host='localhost', user='root', password='270921EN@')
         return conn
     except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
@@ -44,14 +22,10 @@ def desconectar(conn):
     if conn:
         conn.close()
 
+
 def converte_encomenda(encomenda_banco):
-    return {
-        "encomenda_id":encomenda_banco[0],
-        "titulo":encomenda_banco[1],
-        "tipo":encomenda_banco[2],
-        "nota_fiscal":encomenda_banco[3],
-        "id_usuarios":encomenda_banco[4]
-    }
+    return {"id": encomenda_banco[0], "titulo": encomenda_banco[1], "tipo": encomenda_banco[2],
+            "nota_fiscal": encomenda_banco[3], "id_usuarios": encomenda_banco[4]}
 
 
 class Encomendas(Resource):
@@ -70,7 +44,6 @@ class Encomendas(Resource):
 
 
 class Encomenda(Resource):
-
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('titulo')
     argumentos.add_argument('tipo')
@@ -78,22 +51,17 @@ class Encomenda(Resource):
     argumentos.add_argument('id_usuarios')
 
 
-    def find_encomenda(encomenda_id):
-        for encomenda in encomendas:
-            if encomenda["encomenda_id"] == encomenda_id:
-                return encomenda
-        return None
-    def get(self, encomenda_id):
+
+
+    def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from encomendas where id ='{encomenda_id}'")
+        cursor.execute(f"select * from encomendas where id ='{id}'")
         encomenda = cursor.fetchone()
 
         return converte_encomenda(encomenda)
 
-
-
-    def post(self, encomenda_id):
+    def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
@@ -104,13 +72,14 @@ class Encomenda(Resource):
         conn.commit()
         desconectar(conn)
 
+        dados["id"] = cursor.lastrowid
+
         if cursor.rowcount == 1:
             return dados, 200
         else:
             return dados, 400
 
-
-    def put(self, encomenda_id):
+    def put(self, id):
 
         conn = conectar()
         cursor = conn.cursor()
@@ -118,7 +87,7 @@ class Encomenda(Resource):
         dados = Encomenda.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE encomendas SET titulo='{dados['titulo']}',tipo='{dados['tipo']}',nota_fiscal='{dados['nota_fiscal']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{encomenda_id}'")
+            f"UPDATE encomendas SET titulo='{dados['titulo']}',tipo='{dados['tipo']}',nota_fiscal='{dados['nota_fiscal']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{id}'")
         conn.commit()
         desconectar(conn)
 
@@ -127,12 +96,11 @@ class Encomenda(Resource):
         else:
             return dados, 400
 
-
-    def delete(self, encomenda_id):
+    def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute(f'DELETE FROM encomendas WHERE id={encomenda_id}')
+        cursor.execute(f'DELETE FROM encomendas WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:
