@@ -15,7 +15,7 @@ api = Api(app)
 api.add_resource(Hoteis, '/hoteis')
 api.add_resource(Hotel, '/hotel/<hotel_id>')
 api.add_resource(Usuarios, '/usuarios')
-api.add_resource(Usuario, '/usuario/<usuario_id>')
+api.add_resource(Usuario, '/usuario/<id>')
 api.add_resource(Unidades, '/unidades')
 api.add_resource(Unidade, '/unidade/<unidade_id>')
 api.add_resource(Encomendas, '/encomendas')
@@ -31,4 +31,4 @@ api.add_resource(Cobranca, '/cobranca/<cobranca_id>')
 
 
 if __name__ =='__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=80)
