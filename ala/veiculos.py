@@ -35,13 +35,12 @@ def conectar():
         conn = pymysql.connect(
             db='controle_condominio',
             host='localhost',
-            user='root',
-            password='270921EN@'
+            user='app',
+            password='@Erick270921'
         )
         return conn
     except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
-
 
 def desconectar(conn):
     if conn:
@@ -118,7 +117,7 @@ class Veiculo(Resource):
         dados = Veiculo.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE veiculos  SET placa='{dados['placa']}',marca='{dados['marca']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{veiculo_id}'")
+            f"UPDATE veiculos  SET placa='{dados['placa']}',marca='{dados['marca']}',nome_veiculo='{dados['nome_veiculo']}',cor='{dados['cor']}',id_usuarios='{dados['id_usuarios']}' WHERE id = '{id}'")
         conn.commit()
         desconectar(conn)
 
@@ -130,6 +129,12 @@ class Veiculo(Resource):
     def delete(self, id):
         conn = conectar()
         cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM veiculos')
+        veiculos = cursor.fetchall()
+
+        if veiculos is None:
+            return 400
 
         cursor.execute(f'DELETE FROM veiculos WHERE id={id}')
         conn.commit()

@@ -12,7 +12,12 @@ encomendas = [{'encomenda_id': 'a', 'titulo': 'Mercado livre', 'tipo': 'caixa', 
 
 def conectar():
     try:
-        conn = pymysql.connect(db='controle_condominio', host='localhost', user='root', password='270921EN@')
+        conn = pymysql.connect(
+            db='controle_condominio',
+            host='localhost',
+            user='app',
+            password='@Erick270921'
+        )
         return conn
     except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
@@ -100,11 +105,17 @@ class Encomenda(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
+        cursor.execute('SELECT * FROM encomendas')
+        encomendas = cursor.fetchall()
+
+        if encomendas is None:
+            return 400
+
         cursor.execute(f'DELETE FROM encomendas WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:
-            print('Encomenda excluido com sucesso.')
+            print('Encomendas excluido com sucesso.')
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)

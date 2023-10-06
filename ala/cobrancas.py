@@ -31,8 +31,8 @@ def conectar():
         conn = pymysql.connect(
             db='controle_condominio',
             host='localhost',
-            user='root',
-            password='270921EN@'
+            user='app',
+            password='@Erick270921'
         )
         return conn
     except pymysql.Error as e:

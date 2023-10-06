@@ -35,61 +35,58 @@ def conectar():
     except pymysql.Error as e:
         print(f'Erro ao conectar ao Mysql {e}')
 
+
 def desconectar(conn):
     if conn:
         conn.close()
 
 
-def converte_unidade(unidade_banco):
+def converte_rel_funcao(rel_funcao_converte):
     return {
-        "id": unidade_banco[0],
-        "numero": unidade_banco[1],
-        "bloco": unidade_banco[2],
-        "andar": unidade_banco[3],
-        "id_usuarios": unidade_banco[4]
+        "id": rel_funcao_converte[0],
+        "id_usuario": rel_funcao_converte[1],
+        "id_funcao": rel_funcao_converte[2]
     }
 
 
-class Unidades(Resource):
+class Rel_Funcaos(Resource):
     def get(self):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM unidades')
-        unidades = cursor.fetchall()
+        cursor.execute('SELECT * FROM rel_funcao_usuario')
+        rel_funcao = cursor.fetchall()
 
-        unidades_convertido = []
+        rel_funcao_convertido = []
 
-        for unidade in unidades:
-            unidades_convertido.append(converte_unidade(unidade))
+        for rel_funcao in rel_funcao:
+            rel_funcao_convertido.append(converte_rel_funcao(rel_funcao))
 
-        return {'unidade': unidades_convertido}
+        return {'rel_funcao': rel_funcao_convertido}
 
 
-class Unidade(Resource):
+class Rel_Funcao(Resource):
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('numero')
-    argumentos.add_argument('bloco')
-    argumentos.add_argument('andar')
-    argumentos.add_argument('id_usuarios')
+    argumentos.add_argument('id_usuario')
+    argumentos.add_argument('id_funcao')
 
 
     def get(self, id):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"select * from unidades where id ='{id}'")
-        unidade = cursor.fetchone()
+        cursor.execute(f"select * from rel_funcao_usuario where id ='{id}'")
+        rel_funcao = cursor.fetchone()
         desconectar(conn)
 
-        return converte_unidade(unidade)
+        return converte_rel_funcao(rel_funcao)
 
     def post(self, id):
         conn = conectar()
         cursor = conn.cursor()
 
-        dados = Unidade.argumentos.parse_args()
+        dados = Rel_Funcao.argumentos.parse_args()
 
         cursor.execute(
-            f"INSERT INTO unidades (numero, bloco, andar, id_usuarios) VALUES ('{dados['numero']}','{dados['bloco']}','{dados['andar']}','{dados['id_usuarios']}')")
+            f"INSERT INTO rel_funcao_usuario (id_usuario, id_funcao) VALUES ('{dados['id_usuario']}','{dados['id_funcao']}')")
         conn.commit()
         desconectar(conn)
 
@@ -104,10 +101,10 @@ class Unidade(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
-        dados = Unidade.argumentos.parse_args()
+        dados = Rel_Funcao.argumentos.parse_args()
 
         cursor.execute(
-            f"UPDATE unidades SET numero='{dados['numero']}',bloco='{dados['bloco']}', andar='{dados['andar']}',id_usuarios='{dados['id_usuarios']}' WHERE id = {id}")
+            f"UPDATE rel_funcao_usuario SET id_usuario='{dados['id_usuario']}',id_funcao='{dados['id_funcao']}' WHERE id = {id}")
         conn.commit()
         desconectar(conn)
 
@@ -120,19 +117,20 @@ class Unidade(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM unidades')
-        unidades = cursor.fetchall()
+        cursor.execute('SELECT * FROM rel_funcao_usuario')
+        rel_funcoe = cursor.fetchall()
 
-        if unidades is None:
+        if rel_funcoe is None:
             return 400
 
-        cursor.execute(f'DELETE FROM unidades WHERE id={id}')
+        cursor.execute(f'DELETE FROM rel_funcao_usuario WHERE id={id}')
         conn.commit()
 
         if cursor.rowcount == 1:
-            print('Unidades excluido com sucesso.')
+            print('Rel_Funcaos_Usuario excluido com sucesso.')
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)
+
 
 

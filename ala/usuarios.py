@@ -158,3 +158,4 @@ class Usuario(Resource):
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)
+

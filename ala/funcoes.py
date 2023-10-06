@@ -25,8 +25,8 @@ def conectar():
         conn = pymysql.connect(
             db='controle_condominio',
             host='localhost',
-            user='root',
-            password='270921EN@'
+            user='app',
+            password='@Erick270921'
         )
         return conn
     except pymysql.Error as e:
@@ -112,6 +112,12 @@ class Funcoe(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
+        cursor.execute('SELECT * FROM funcoes')
+        funcoes = cursor.fetchall()
+
+        if funcoes is None:
+            return 400
+
         cursor.execute(f'DELETE FROM funcoes WHERE id={id}')
         conn.commit()
 
@@ -120,3 +126,4 @@ class Funcoe(Resource):
         else:
             print('Não foi possivel DELETAR. ')
         desconectar(conn)
+
