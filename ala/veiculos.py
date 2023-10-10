@@ -65,6 +65,9 @@ class Veiculos(Resource):
         cursor.execute('SELECT * FROM veiculos')
         veiculos = cursor.fetchall()
 
+        if veiculos is None:
+            return 404
+
         veiculos_convertido = []
 
         for veiculo in veiculos:

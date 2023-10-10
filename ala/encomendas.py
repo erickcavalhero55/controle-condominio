@@ -40,6 +40,9 @@ class Encomendas(Resource):
         cursor.execute('SELECT * FROM encomendas')
         encomendas = cursor.fetchall()
 
+        if encomendas is None:
+            return 404
+
         encomendas_convertido = []
 
         for encomenda in encomendas:

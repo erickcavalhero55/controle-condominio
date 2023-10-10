@@ -56,6 +56,9 @@ class Rel_Funcaos(Resource):
         cursor.execute('SELECT * FROM rel_funcao_usuario')
         rel_funcao = cursor.fetchall()
 
+        if rel_funcao is None:
+            return 404
+
         rel_funcao_convertido = []
 
         for rel_funcao in rel_funcao:

@@ -69,6 +69,11 @@ class Cobrancas(Resource):
         cursor.execute('SELECT * FROM cobrancas')
         cobrancas = cursor.fetchall()
 
+
+        if cobrancas is None:
+            return 404
+
+
         cobrancas_convertido = []
 
         for cobranca in cobrancas:
@@ -139,10 +144,10 @@ class Cobranca(Resource):
         conn = conectar()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM usuarios')
-        usuarios = cursor.fetchall()
+        cursor.execute('SELECT * FROM cobrancas')
+        cobrancas = cursor.fetchall()
 
-        if usuarios is None:
+        if cobrancas is None:
             return 400
 
         cursor.execute(f'DELETE FROM cobrancas WHERE id={id}')

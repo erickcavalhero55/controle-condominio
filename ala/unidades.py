@@ -57,6 +57,9 @@ class Unidades(Resource):
         cursor.execute('SELECT * FROM unidades')
         unidades = cursor.fetchall()
 
+        if unidades is None:
+            return 404
+
         unidades_convertido = []
 
         for unidade in unidades:

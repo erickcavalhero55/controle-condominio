@@ -52,6 +52,9 @@ class Funcoes(Resource):
         cursor.execute('SELECT * FROM funcoes')
         funcoes = cursor.fetchall()
 
+        if funcoes is None:
+            return 404
+
         funcoes_convertido = []
 
         for funcoe in funcoes:

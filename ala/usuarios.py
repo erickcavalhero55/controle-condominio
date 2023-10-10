@@ -77,6 +77,9 @@ class Usuarios(Resource):
         cursor.execute('SELECT * FROM usuarios')
         usuarios = cursor.fetchall()
 
+        if usuarios is None:
+            return 404
+
         usuarios_convertido = []
 
         for usuario in usuarios:
