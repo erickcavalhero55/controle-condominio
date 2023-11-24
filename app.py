@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_restful import Api
-from ala.rel_funcao import Rel_Funcaos, Rel_Funcao
-from ala.usuarios import Usuarios, Usuario
-from ala.unidades import Unidades, Unidade
+
+from ala.cobrancas import Cobrancas, Cobranca
 from ala.encomendas import Encomendas, Encomenda
 from ala.funcoes import Funcoes, Funcoe
+from ala.rel_funcao import Rel_Funcaos, Rel_Funcao
+from ala.unidades import Unidades, Unidade
+from ala.usuarios import Usuarios, Usuario
 from ala.veiculos import Veiculos, Veiculo
-from ala.cobrancas import Cobrancas, Cobranca
 
 app = Flask(__name__)
 api = Api(app)
@@ -26,8 +27,5 @@ api.add_resource(Veiculo, '/veiculo/<id>')
 api.add_resource(Cobrancas, '/cobrancas')
 api.add_resource(Cobranca, '/cobranca/<id>')
 
-
-
-
-if __name__ =='__main__':
-    app.run(debug=True, port=80)
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
