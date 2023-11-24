@@ -8,7 +8,7 @@ from ala.rel_funcao import Rel_Funcaos, Rel_Funcao
 from ala.unidades import Unidades, Unidade
 from ala.usuarios import Usuarios, Usuario
 from ala.veiculos import Veiculos, Veiculo
-
+from ala.validacao_cpf import Validacao
 app = Flask(__name__)
 api = Api(app)
 
@@ -26,6 +26,6 @@ api.add_resource(Veiculos, '/veiculos')
 api.add_resource(Veiculo, '/veiculo/<id>')
 api.add_resource(Cobrancas, '/cobrancas')
 api.add_resource(Cobranca, '/cobranca/<id>')
-
+api.add_resource(Validacao, '/validacao')
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
