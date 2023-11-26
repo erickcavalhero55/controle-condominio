@@ -7,8 +7,8 @@ def conectar():
         conn = pymysql.connect(
             db='controle_condominio',
             host='localhost',
-            user='app',
-            password='@Erick270921'
+            user='root',
+            password='270921EN@'
         )
         return conn
     except pymysql.Error as e:
@@ -20,18 +20,17 @@ def desconectar(conn):
         conn.close()
 
 
-def converte_validacao(validacao_banco):
+def converte_usuario(usuario_banco):
     return {
-        "id": validacao_banco[0],
-        "nome": validacao_banco[1],
-        "sobrenome": validacao_banco[2],
-        "rg": validacao_banco[3],
-        "cpf": validacao_banco[4],
-        "telefone": validacao_banco[5],
-        "celular": validacao_banco[6],
-        "email": validacao_banco[7],
-        "genero": validacao_banco[8]
-
+        "id": usuario_banco[0],
+        "nome": usuario_banco[1],
+        "sobrenome": usuario_banco[2],
+        "rg": usuario_banco[3],
+        "cpf": usuario_banco[4],
+        "telefone": usuario_banco[5],
+        "celular": usuario_banco[6],
+        "email": usuario_banco[7],
+        "genero": usuario_banco[8]
     }
 class Validacao(Resource):
     argumentos = reqparse.RequestParser()
@@ -49,14 +48,11 @@ class Validacao(Resource):
         conn = conectar()
         cursor = conn.cursor()
         cursor.execute(f"select * from usuarios where cpf ='{cpf}'")
-        validacao = cursor.fetchall()
+        usuario = cursor.fetchone()
 
-        if validacao is None:
-            return 404
+        if usuario is None:
+            return {}, 404
 
-        validacao_convertido = []
+        usuario_convertido = converte_usuario(usuario)
 
-        for validacao in validacao:
-            validacao_convertido.append(converte_validacao(validacao))
-
-        return {'validacao': validacao_convertido}
+        return usuario_convertido
