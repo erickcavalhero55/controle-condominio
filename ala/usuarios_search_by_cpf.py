@@ -32,7 +32,7 @@ def converte_usuario(usuario_banco):
         "email": usuario_banco[7],
         "genero": usuario_banco[8]
     }
-class Validacao(Resource):
+class UsuariosSearchByCpf(Resource):
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('nome')
     argumentos.add_argument('sobrenome')
