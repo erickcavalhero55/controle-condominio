@@ -1,32 +1,7 @@
 import pymysql
 from flask_restful import Resource, reqparse
 
-encomendas = [{'encomenda_id': 'a', 'titulo': 'Mercado livre', 'tipo': 'caixa', 'codigo': 123245658
-
-               }, {'encomenda_id': 'b', 'titulo': 'Amazon', 'tipo': 'envelope', 'codigo': 556589546
-
-                   }, {'encomenda_id': 'c', 'titulo': 'Casas Bahia', 'tipo': 'carta', 'codigo': 4578954645658111
-
-                       }]
-
-
-def conectar():
-    try:
-        conn = pymysql.connect(
-            db='controle_condominio',
-            host='localhost',
-            user='app',
-            password='@Erick270921'
-        )
-        return conn
-    except pymysql.Error as e:
-        print(f'Erro ao conectar ao Mysql {e}')
-
-
-def desconectar(conn):
-    if conn:
-        conn.close()
-
+from ala.conexao import conectar, desconectar
 
 def converte_encomenda(encomenda_banco):
     return {"id": encomenda_banco[0], "titulo": encomenda_banco[1], "tipo": encomenda_banco[2],

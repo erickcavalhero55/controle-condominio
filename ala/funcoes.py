@@ -1,41 +1,7 @@
 import pymysql
 from flask_restful import Resource, reqparse
 
-funcoes = [
-    {
-        'funcoes_id': 'a',
-        'nome': 'jose'
-
-    },
-    {
-        'funcoes_id': 'b',
-        'nome': 'maria'
-
-    },
-    {
-        'funcoes_id': 'c',
-        'nome': 'joao'
-
-    }
-]
-
-
-def conectar():
-    try:
-        conn = pymysql.connect(
-            db='controle_condominio',
-            host='localhost',
-            user='app',
-            password='@Erick270921'
-        )
-        return conn
-    except pymysql.Error as e:
-        print(f'Erro ao conectar ao Mysql {e}')
-
-
-def desconectar(conn):
-    if conn:
-        conn.close()
+from ala.conexao import conectar, desconectar
 
 
 def converte_funcoes(funcoes_banco):
