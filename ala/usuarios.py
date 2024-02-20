@@ -1,60 +1,7 @@
 import pymysql
 from flask_restful import Resource, reqparse
 
-pessoas = [
-    {
-        'pessoa_id': '1',
-        'nome': 'Maria',
-        'sobrenome': 'Dias',
-        'rg': 123456789,
-        'cpf': 789456123,
-        'telefone': 1123456789,
-        'celular': 11987654231,
-        'email': 'Mariadias@gmail.com'
-
-    },
-    {
-        'pessoa_id': '2',
-        'nome': 'Joao',
-        'sobrenome': 'Silva',
-        'rg': 4564488961,
-        'cpf': 56547899546,
-        'telefone': 11125546985,
-        'celular': 11954879859,
-        'email': 'Joaosilva@gmail.com'
-
-    },
-    {
-        'pessoa_id': '3',
-        'nome': 'Jose',
-        'sobrenome': 'Carvalho',
-        'rg': 4578945625,
-        'cpf': 45789546123,
-        'telefone': 1124789456,
-        'celular': 11945785123,
-        'email': 'Josecarvalho@gmail.com'
-
-    },
-]
-
-
-def conectar():
-    try:
-        conn = pymysql.connect(
-            db='controle_condominio',
-            host='localhost',
-            user='app',
-            password='@Erick270921'
-        )
-        return conn
-    except pymysql.Error as e:
-        print(f'Erro ao conectar ao Mysql {e}')
-
-
-def desconectar(conn):
-    if conn:
-        conn.close()
-
+from ala.conexao import conectar, desconectar
 
 def converte_usuario(usuario_banco):
     return {

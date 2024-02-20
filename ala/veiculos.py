@@ -2,49 +2,7 @@ import pymysql
 
 from flask_restful import Resource, reqparse
 
-veiculos = [
-    {
-        'veiculo_id': 'a',
-        'placa': '1234',
-        'marca': 'volvo ',
-        'nome': 'volvo c40',
-        'cor': 'preto'
-
-    },
-    {
-        'veiculo_id': 'b',
-        'placa': '1454',
-        'marca': 'honda ',
-        'nome': 'fit',
-        'cor': 'branco'
-
-    },
-    {
-        'veiculo_id': 'c',
-        'placa': '1456',
-        'marca': 'toyota ',
-        'nome': 'corola',
-        'cor': 'azul'
-
-    }
-]
-
-
-def conectar():
-    try:
-        conn = pymysql.connect(
-            db='controle_condominio',
-            host='localhost',
-            user='app',
-            password='@Erick270921'
-        )
-        return conn
-    except pymysql.Error as e:
-        print(f'Erro ao conectar ao Mysql {e}')
-
-def desconectar(conn):
-    if conn:
-        conn.close()
+from ala.conexao import conectar, desconectar
 
 
 def converte_veiculo(veiculo_banco):
