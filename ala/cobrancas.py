@@ -24,7 +24,7 @@ class Cobrancas(Resource):
 
     def get(self):
         conn = conectar()
-        cursor = conn.cursor()
+         cursor = conn.cursor()
         cursor.execute('SELECT * FROM cobrancas')
         cobrancas = cursor.fetchall()
 
