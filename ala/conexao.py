@@ -6,7 +6,7 @@ def conectar():
             db='controle_condominio',
             host='localhost',
             user='root',
-            password='270921EN@'
+            password='nova_senha_aqui'
         )
         return conn
     except pymysql.Error as e:
